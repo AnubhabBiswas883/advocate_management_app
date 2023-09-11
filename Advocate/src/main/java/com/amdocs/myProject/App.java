@@ -127,9 +127,9 @@ private static void viewAllDetails() throws SQLException, SystemException {
 private static void viewDetails() throws SystemException, SQLException {
 	try {
 		System.out.println("Enter your Customer ID ");
-		int custid = scanner.nextInt();
+		int custid = Integer.parseInt(scanner.nextLine());
 
-		scanner.nextLine();
+		//scanner.nextLine();
 		dao.showdetails(custid);
 	} catch (NumberFormatException e) {
 		throw new SystemException("Please Provide a number value\n " + e.getMessage());
@@ -195,7 +195,7 @@ private static void bookAppointment() throws SystemException, SQLException {
 
 
 
-private static Customer createCustomer() throws SystemException {
+private static Customer createCustomer() throws SystemException, InvalidCustomerDataException  {
 	Customer obj = new Customer();
 	try {
 		System.out.println("Enter The First Name: ");
@@ -206,13 +206,23 @@ private static Customer createCustomer() throws SystemException {
 		String lastName = scanner.nextLine();
 		obj.setLastName(lastName);
 		lastName = obj.getLastName();
+		System.out.println("Enter Your Phone Number: ");
+		String phNo = scanner.nextLine();
+		obj.setphno(phNo);
+		System.out.println("Enter Your Email ID: ");
+		String email = scanner.nextLine();
+		obj.setEmail(email);
+		if (!isValidPhoneNumber(phNo) || !isValidEmail(email)) {
+			throw new InvalidCustomerDataException("Enetered Data is Invalid");
+		}
+		
 	} catch (NumberFormatException e) {
 		throw new SystemException("Please Provide a number value\n " + e.getMessage());
 	}
 
 	return obj;
 }
-private static Customer updateCustomer() throws SystemException {
+private static Customer updateCustomer() throws SystemException, InvalidCustomerDataException {
 	Customer obj = new Customer();
 	try {
 		System.out.println("Enter the Customer ID: ");
@@ -227,6 +237,15 @@ private static Customer updateCustomer() throws SystemException {
 		String lastName = scanner.nextLine();
 		obj.setLastName(lastName);
 		lastName = obj.getLastName();
+		System.out.println("Enter Your Phone Number: ");
+		String phNo = scanner.nextLine();
+		obj.setphno(phNo);
+		System.out.println("Enter Your Email ID: ");
+		String email = scanner.nextLine();
+		obj.setEmail(email);
+		if (!isValidPhoneNumber(phNo) || !isValidEmail(email)) {
+			throw new InvalidCustomerDataException("Enetered Data is Invalid");
+		}
 	} catch (NumberFormatException e) {
 		throw new SystemException("Please Provide a number value\n " + e.getMessage());
 	}
@@ -250,7 +269,7 @@ private static Customer deleteCustomer() throws SystemException {
 
 private static CustomerDao dao = new CustomerDaoImpl();
 
-private static void addCustomer() {
+private static void addCustomer() throws InvalidCustomerDataException {
 	Customer createCustomer;
 	try {
 		createCustomer = createCustomer();
@@ -263,7 +282,7 @@ private static void addCustomer() {
 
 }
 
-private static void modifyCustomer() {
+private static void modifyCustomer() throws InvalidCustomerDataException {
 	Customer updateCustomer;
 	try {
 		updateCustomer = updateCustomer();
@@ -286,6 +305,12 @@ private static void removeCustomer() {
 		System.out.println(e);
 	}
 
+}
+private static boolean isValidPhoneNumber(String phno) {
+	return phno.matches("\\d{10}");
+}
+private static boolean isValidEmail(String email) {
+	return email.endsWith("@gmail.com");
 }
 
 }
